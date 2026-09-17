@@ -1,0 +1,5 @@
+name = "world-radio-proxy"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+# 运行时变量和密钥统一在 Cloudflare Dashboard 管理，部署时保留它们。
+keep_vars = true

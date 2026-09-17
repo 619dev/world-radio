@@ -28,7 +28,7 @@ async function load(reset=true){loading.value=true;loadError.value='';if(reset){
 async function selectPlace(p:Place){place.value=p;mobilePanel.value=true;tag.value='';language.value='';await load();if(settings.autoPlayRandom&&stations.value[0])play(stations.value[0])}
 async function selectCountry(code:string){const p=PLACES.find(x=>x.code===code);if(p)await selectPlace(p);else flash('该国家暂无本地化索引，可通过搜索查找电台')}
 async function randomTrip(){let next=place.value;while(next.code===place.value.code)next=PLACES[Math.floor(Math.random()*PLACES.length)];await selectPlace(next)}
-async function play(s:Station){if(current.value?.id===s.id&&playerStatus.value==='playing'){engine.pause();return}current.value=s;queue.value=filteredStations.value;playerStatus.value='loading';saveStation('history',s).then(refreshSaved).catch(()=>{});engine.setVolume(volume.value);engine.setMuted(muted.value);await engine.play(s)}
+async function play(s:Station){if(current.value?.id===s.id&&playerStatus.value==='playing'){engine.pause();return}current.value=s;queue.value=filteredStations.value;playerStatus.value='loading';saveStation('history',s).then(refreshSaved).catch(()=>{});radioApi.click(s.id).catch(()=>{});engine.setVolume(volume.value);engine.setMuted(muted.value);await engine.play(s)}
 async function togglePlay(){if(!current.value)return;if(playerStatus.value==='playing')engine.pause();else if(playerStatus.value==='paused')await engine.resume();else await engine.play(current.value)}
 function adjacent(delta:number){if(!queue.value.length)return;const i=Math.max(0,queue.value.findIndex(s=>s.id===current.value?.id));play(queue.value[(i+delta+queue.value.length)%queue.value.length])}
 function toggleFavorite(s:Station){

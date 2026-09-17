@@ -1,5 +1,6 @@
 import Hls from 'hls.js'
 import type { Station,PlayerStatus } from '../types'
+import {isProxiedStation,playbackUrl} from './streamProxy'
 export class AudioEngine{
  audio=new Audio();hls:Hls|null=null;timer:number|null=null;generation=0;volume=1;muted=false;activeMixedContent=false
  onState:(s:PlayerStatus,msg?:string)=>void=()=>{}
@@ -14,14 +15,15 @@ export class AudioEngine{
  async play(station:Station){
   this.stop();const generation=this.generation;this.onState('loading')
   const isMixedContent=location.protocol==='https:'&&station.streamUrl.startsWith('http:')
-  this.activeMixedContent=isMixedContent
-  const url=isMixedContent?station.streamUrl.replace(/^http:/,'https:'):station.streamUrl
+  this.activeMixedContent=isMixedContent&&!isProxiedStation(station)
+  let url:string
   try{
-   if((station.codec==='HLS'||/\.m3u8($|\?)/i.test(url))&&Hls.isSupported()){this.hls=new Hls({enableWorker:true});this.hls.loadSource(url);this.hls.attachMedia(this.audio)}else this.audio.src=url
+   url=playbackUrl(station)
+   if((station.hls||station.codec==='HLS'||/\.m3u8($|\?)/i.test(url))&&Hls.isSupported()){this.hls=new Hls({enableWorker:true});this.hls.loadSource(url);this.hls.attachMedia(this.audio)}else this.audio.src=url
    await Promise.race([this.audio.play(),new Promise((_,reject)=>{this.timer=window.setTimeout(()=>reject(new Error('连接超时')),15000)})])
    if(generation!==this.generation)return
    if(this.timer)clearTimeout(this.timer)
-  }catch(e){if(generation===this.generation)this.onState('error',(e as Error).message.includes('NotAllowed')?'浏览器阻止了自动播放，请再次点击播放':isMixedContent?'该电台只提供 HTTP 流，无法在 HTTPS 页面中安全播放':'当前电台暂不可用或格式不受支持')}
+  }catch(e){if(generation===this.generation)this.onState('error',(e as Error).message.includes('NotAllowed')?'浏览器阻止了自动播放，请再次点击播放':isMixedContent&&!isProxiedStation(station)?(e as Error).message:'当前电台暂不可用或格式不受支持')}
  }
  pause(){this.audio.pause()} async resume(){this.onState('loading');await this.audio.play()}
  stop(){

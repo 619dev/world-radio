@@ -6,7 +6,10 @@
     "dev": "vite",
     "build": "vue-tsc -p tsconfig.app.json --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "typecheck": "vue-tsc -p tsconfig.app.json --noEmit"
+    "typecheck": "vue-tsc -p tsconfig.app.json --noEmit",
+    "test:proxy": "node --test worker/test/*.test.js",
+    "worker:dev": "npx wrangler dev --config worker/wrangler.toml",
+    "worker:deploy": "npx wrangler deploy --config worker/wrangler.toml"
   },
   "keywords": [],
   "author": "",
