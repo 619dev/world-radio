@@ -190,8 +190,9 @@ function responseHeaders(upstream, request, env) {
 function allowedOrigin(request, env) {
   const origin = request.headers.get('Origin')
   const allowed = (env.ALLOWED_ORIGINS || '').split(',').map(x => x.trim()).filter(Boolean)
+  if (!allowed.length) return ''
   if (!origin) return allowed[0] || '*'
-  if (!allowed.length || allowed.includes('*') || allowed.includes(origin)) return origin
+  if (allowed.includes('*') || allowed.includes(origin)) return origin
   return ''
 }
 

@@ -2,6 +2,11 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { isPrivateHostname, rewritePlaylist, validateUpstream } from '../src/index.js'
 
+test('fails closed when allowed origins are not configured', async () => {
+  const response = await (await import('../src/index.js')).default.fetch(new Request('https://proxy.example.com/health'), {})
+  assert.equal(response.status, 403)
+})
+
 test('blocks private and metadata addresses', () => {
   for (const host of ['localhost', '127.0.0.1', '10.1.2.3', '169.254.169.254', '172.16.2.3', '192.168.1.1', 'service.local']) {
     assert.equal(isPrivateHostname(host), true, host)

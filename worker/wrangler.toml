@@ -1,11 +1,5 @@
 name = "world-radio-proxy"
 main = "src/index.js"
 compatibility_date = "2026-09-01"
-
-[vars]
-# 部署前替换为实际的 Vercel 域名；本地调试可追加 http://localhost:5173
-ALLOWED_ORIGINS = "https://your-project.vercel.app,http://localhost:5173"
-# Radio Browser API 镜像，可按部署区域更换。
-RADIO_BROWSER_API = "https://de1.api.radio-browser.info"
-# 如有电台使用其他端口，请在这里明确追加。
-ALLOWED_STREAM_PORTS = "80,443,8000,8001,8080,8081,8443,8888"
+# 运行时变量和密钥统一在 Cloudflare Dashboard 管理，部署时保留它们。
+keep_vars = true

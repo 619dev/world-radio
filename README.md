@@ -89,22 +89,12 @@ HTTPS 页面不能直接播放只提供 HTTP 地址的电台。本项目通过�
 
 快速部署步骤：
 
-1. 先将前端部署到 Vercel，取得正式 HTTPS 域名。
-2. 将该域名填入 `worker/wrangler.toml` 的 `ALLOWED_ORIGINS`。
-3. 设置签名密钥并部署 Worker：
+1. 在 Vercel 网页导入 GitHub 仓库，取得正式 HTTPS 域名。
+2. 在 Cloudflare Workers 网页导入同一仓库，部署命令填写 `npx wrangler deploy --config worker/wrangler.toml`。
+3. 在 Cloudflare 网页配置 `ALLOWED_ORIGINS` 和 Secret `STREAM_PROXY_SECRET`。
+4. 在 Vercel 网页配置 `VITE_STREAM_PROXY_URL`，然后重新部署。
 
-```bash
-npx wrangler secret put STREAM_PROXY_SECRET --config worker/wrangler.toml
-npm run worker:deploy
-```
-
-4. 在 Vercel 项目环境变量中设置：
-
-```text
-VITE_STREAM_PROXY_URL=https://world-radio-proxy.<你的账号>.workers.dev
-```
-
-5. 重新部署 Vercel 前端。
+域名、端口、API 镜像和密钥均通过平台变量管理，不需要为不同部署环境修改代码或配置文件。
 
 完整的首次部署、域名配置、上线验收、更新、回滚和故障排查步骤请阅读 [完整部署指南](docs/deployment.md)。
 
