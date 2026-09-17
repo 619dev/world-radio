@@ -1,5 +1,4 @@
 const DEFAULT_RADIO_BROWSER_API = 'https://all.api.radio-browser.info'
-const DEFAULT_ALLOWED_PORTS = new Set(['80', '443', '8000', '8001', '8080', '8081', '8443', '8888'])
 const PLAYLIST_TYPES = ['application/vnd.apple.mpegurl', 'application/x-mpegurl', 'audio/mpegurl', 'audio/x-mpegurl']
 const encoder = new TextEncoder()
 
@@ -133,9 +132,10 @@ export function validateUpstream(rawUrl, env = {}) {
   const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, '').replace(/\.$/, '')
   if (isPrivateHostname(hostname)) throw new Error('Private upstream address is not allowed')
   const ports = new Set((env.ALLOWED_STREAM_PORTS || '').split(',').map(x => x.trim()).filter(Boolean))
-  const allowedPorts = ports.size ? ports : DEFAULT_ALLOWED_PORTS
   const effectivePort = url.port || (url.protocol === 'https:' ? '443' : '80')
-  if (!allowedPorts.has(effectivePort)) throw new Error('Upstream port is not allowed')
+  const portNumber = Number(effectivePort)
+  const allowedByDefault = effectivePort === '80' || effectivePort === '443' || effectivePort === '81' || portNumber >= 1024
+  if (ports.size ? !ports.has(effectivePort) : !allowedByDefault) throw new Error('Upstream port is not allowed')
   return url
 }
 

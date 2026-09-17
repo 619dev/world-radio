@@ -90,7 +90,7 @@ worker/src/index.js
 | Type | Name | 默认值 | 何时修改 |
 | --- | --- | --- | --- |
 | Text | `RADIO_BROWSER_API` | `https://all.api.radio-browser.info` | 需要固定到特定镜像时 |
-| Text | `ALLOWED_STREAM_PORTS` | `80,443,8000,8001,8080,8081,8443,8888` | 已确认公开电台使用其他端口时 |
+| Text | `ALLOWED_STREAM_PORTS` | 未设置时允许 `80`、`81`、`443` 和 `1024–65535` | 需要使用精确端口白名单时 |
 
 注意：
 
@@ -253,7 +253,7 @@ Worker 本地变量放在 `worker/.dev.vars`：
 ALLOWED_ORIGINS=http://localhost:5173
 STREAM_PROXY_SECRET=本地随机密钥
 RADIO_BROWSER_API=https://all.api.radio-browser.info
-ALLOWED_STREAM_PORTS=80,443,8000,8001,8080,8081,8443,8888
+ALLOWED_STREAM_PORTS=80,443,8000,8101
 ```
 
 `.env.local` 和 `.dev.vars` 已被 Git 忽略，不要提交真实密钥。
@@ -263,7 +263,7 @@ ALLOWED_STREAM_PORTS=80,443,8000,8001,8080,8081,8443,8888
 - 不要把 Worker 改成接收任意 `?url=` 的公开代理。
 - `STREAM_PROXY_SECRET` 必须使用 Cloudflare Secret 类型。
 - 生产环境使用明确的 `ALLOWED_ORIGINS`。
-- 只开放确实需要的流媒体端口。
+- 默认策略支持互联网电台常见的高位端口，同时阻止大多数低位系统服务；安全要求更严格时可用 `ALLOWED_STREAM_PORTS` 改为精确白名单。
 - 定期查看 Cloudflare Worker 的请求量、错误率和用量。
 - 流量较大时关注第三方电台条款，以及 Cloudflare 和 Vercel 当前套餐限制。
 - Worker 只解决浏览器 Mixed Content，不用于绕过付费、认证、版权或地区限制。

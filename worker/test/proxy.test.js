@@ -16,9 +16,11 @@ test('blocks private and metadata addresses', () => {
 
 test('validates protocols and configured ports', () => {
   assert.equal(validateUpstream('http://radio.example.com:8000/live').port, '8000')
+  assert.equal(validateUpstream('http://radio.example.com:8101/live').port, '8101')
   assert.throws(() => validateUpstream('file:///etc/passwd'))
   assert.throws(() => validateUpstream('http://127.0.0.1/live'))
-  assert.throws(() => validateUpstream('http://radio.example.com:9000/live'))
+  assert.throws(() => validateUpstream('http://radio.example.com:22/live'))
+  assert.throws(() => validateUpstream('http://radio.example.com:8101/live', { ALLOWED_STREAM_PORTS: '80,443,8000' }))
   assert.equal(validateUpstream('http://radio.example.com:9000/live', { ALLOWED_STREAM_PORTS: '9000' }).port, '9000')
 })
 
