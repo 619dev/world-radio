@@ -2,7 +2,7 @@
 
 一个以 3D 地球为核心交互的全球互联网电台 Web 应用。旋转地球、选择国家或搜索关键词，即可发现并收听世界各地公开的网络电台。
 
-项目采用纯前端架构，无需注册、后端服务或付费 API Key。
+项目前端为静态 Vue 应用；可选的 Cloudflare Worker 音频中继用于兼容只提供 HTTP 地址的公开电台，无需付费 API Key。
 
 ## 功能特性
 
@@ -83,10 +83,41 @@ npm run preview
 npm run typecheck
 ```
 
+## HTTP 电台中继
+
+HTTPS 页面不能直接播放只提供 HTTP 地址的电台。本项目通过独立的 Cloudflare Worker 将这类音频安全地流式转发为 HTTPS；原生 HTTPS 电台仍由浏览器直接连接。
+
+快速部署步骤：
+
+1. 先将前端部署到 Vercel，取得正式 HTTPS 域名。
+2. 将该域名填入 `worker/wrangler.toml` 的 `ALLOWED_ORIGINS`。
+3. 设置签名密钥并部署 Worker：
+
+```bash
+npx wrangler secret put STREAM_PROXY_SECRET --config worker/wrangler.toml
+npm run worker:deploy
+```
+
+4. 在 Vercel 项目环境变量中设置：
+
+```text
+VITE_STREAM_PROXY_URL=https://world-radio-proxy.<你的账号>.workers.dev
+```
+
+5. 重新部署 Vercel 前端。
+
+完整的首次部署、域名配置、上线验收、更新、回滚和故障排查步骤请阅读 [完整部署指南](docs/deployment.md)。
+
 ## 项目结构
 
 ```text
 world-radio/
+├── docs/
+│   └── deployment.md     # Vercel 与 Cloudflare 完整部署指南
+├── worker/
+│   ├── src/              # Cloudflare Worker 音频中继
+│   ├── test/             # 中继安全与 HLS 测试
+│   └── wrangler.toml     # Worker 部署配置
 ├── src/
 │   ├── components/       # 3D 地球等界面组件
 │   ├── services/         # 电台 API、音频引擎和本地存储
@@ -110,7 +141,7 @@ world-radio/
 
 ## 使用限制
 
-网络电台由第三方独立维护，可能因流地址失效、编码格式、地区限制、跨域策略或 HTTP/HTTPS 混合内容而无法播放。本项目不使用代理绕过电台的安全策略或地区限制，也无法保证全部电台始终可用。
+网络电台由第三方独立维护，可能因流地址失效、编码格式、地区限制或源站策略而无法播放。音频中继仅用于解决浏览器 HTTP/HTTPS 混合内容限制，不绕过电台的认证、安全策略或地区限制，也无法保证全部电台始终可用。
 
 ## 许可证
 
