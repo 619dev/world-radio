@@ -3,9 +3,3 @@ main = "src/index.js"
 compatibility_date = "2026-09-01"
 # 运行时变量和密钥统一在 Cloudflare Dashboard 管理，部署时保留它们。
 keep_vars = true
-
-[vars]
-# Only the production site may use the stream proxy. Keeping this in source
-# prevents a domain change or fresh Worker deployment from silently rejecting
-# every proxied station.
-ALLOWED_ORIGINS = "https://o3o.tn,https://www.o3o.tn"
