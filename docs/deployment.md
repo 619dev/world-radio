@@ -89,7 +89,7 @@ worker/src/index.js
 
 | Type | Name | 默认值 | 何时修改 |
 | --- | --- | --- | --- |
-| Text | `RADIO_BROWSER_API` | `https://de1.api.radio-browser.info` | 默认镜像在部署区域不可用时 |
+| Text | `RADIO_BROWSER_API` | `https://all.api.radio-browser.info` | 需要固定到特定镜像时 |
 | Text | `ALLOWED_STREAM_PORTS` | `80,443,8000,8001,8080,8081,8443,8888` | 已确认公开电台使用其他端口时 |
 
 注意：
@@ -252,7 +252,7 @@ Worker 本地变量放在 `worker/.dev.vars`：
 ```text
 ALLOWED_ORIGINS=http://localhost:5173
 STREAM_PROXY_SECRET=本地随机密钥
-RADIO_BROWSER_API=https://de1.api.radio-browser.info
+RADIO_BROWSER_API=https://all.api.radio-browser.info
 ALLOWED_STREAM_PORTS=80,443,8000,8001,8080,8081,8443,8888
 ```
 

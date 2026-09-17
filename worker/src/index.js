@@ -1,4 +1,4 @@
-const DEFAULT_RADIO_BROWSER_API = 'https://de1.api.radio-browser.info'
+const DEFAULT_RADIO_BROWSER_API = 'https://all.api.radio-browser.info'
 const DEFAULT_ALLOWED_PORTS = new Set(['80', '443', '8000', '8001', '8080', '8081', '8443', '8888'])
 const PLAYLIST_TYPES = ['application/vnd.apple.mpegurl', 'application/x-mpegurl', 'audio/mpegurl', 'audio/x-mpegurl']
 const encoder = new TextEncoder()

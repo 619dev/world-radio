@@ -19,7 +19,7 @@ export class AudioEngine{
   let url:string
   try{
    url=playbackUrl(station)
-   if((station.codec==='HLS'||/\.m3u8($|\?)/i.test(url))&&Hls.isSupported()){this.hls=new Hls({enableWorker:true});this.hls.loadSource(url);this.hls.attachMedia(this.audio)}else this.audio.src=url
+   if((station.hls||station.codec==='HLS'||/\.m3u8($|\?)/i.test(url))&&Hls.isSupported()){this.hls=new Hls({enableWorker:true});this.hls.loadSource(url);this.hls.attachMedia(this.audio)}else this.audio.src=url
    await Promise.race([this.audio.play(),new Promise((_,reject)=>{this.timer=window.setTimeout(()=>reject(new Error('连接超时')),15000)})])
    if(generation!==this.generation)return
    if(this.timer)clearTimeout(this.timer)
